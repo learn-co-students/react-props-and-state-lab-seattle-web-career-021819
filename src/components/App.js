@@ -13,6 +13,8 @@ class App extends React.Component {
         type: 'all'
       }
     }
+    // this.handleChangeType = this.handleChangeType.bind(this)
+    // this.handleFindPetsClick = this.handleFindPetsClick.bind(this)
   }
 
   render() {
@@ -24,16 +26,36 @@ class App extends React.Component {
         <div className="ui container">
           <div className="ui grid">
             <div className="four wide column">
-              <Filters />
+              <Filters onChangeType={this.handleChangeType} onFindPetsClick={this.handleFindPetsClick}/>
             </div>
             <div className="twelve wide column">
-              <PetBrowser />
+              <PetBrowser pets={this.state.pets}/>
             </div>
           </div>
         </div>
       </div>
     )
   }
+
+  handleChangeType = (value) => {
+    this.setState({filters: {type: value}})
+    // console.log("this.state.filters.type: ", this.state.filters.type)
+  }
+
+  handleFindPetsClick = (string) => {
+    let api_url = "/api/pets"
+    if (this.state.filters.type !== "all") {
+      api_url = api_url + `?type=${this.state.filters.type}`
+    }
+
+    // console.log("api_url: ", api_url)
+    fetch(api_url)
+    .then(res => res.json())
+    .then(data => this.setState({pets: data}))
+  }
+
+
 }
+
 
 export default App
